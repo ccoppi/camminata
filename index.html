@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatore Velocità Camminata</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+        max-width: 500px;
+        width: 100%;
+    }
+
+    h1 {
+        color: #667eea;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 28px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 14px;
+    }
+
+    .input-group {
+        margin-bottom: 25px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .time-inputs {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .time-input-wrapper {
+        flex: 1;
+        position: relative;
+    }
+
+    input[type="number"] {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 24px;
+        text-align: center;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    input[type="number"]:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .unit {
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+
+    .separator {
+        font-size: 32px;
+        color: #667eea;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    .result-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        margin-top: 30px;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .result-label {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .result-value {
+        color: white;
+        font-size: 48px;
+        font-weight: bold;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .result-unit {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 20px;
+        margin-left: 5px;
+    }
+
+    .info-box {
+        background: #f8f9ff;
+        border-left: 4px solid #667eea;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 5px;
+        font-size: 13px;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 480px) {
+        .container {
+            padding: 25px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .result-value {
+            font-size: 36px;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <h1>⏱️ Calcolatore Velocità</h1>
+        <p class="subtitle">Calcola la tua velocità di camminata</p>
+
+```
+    <div class="input-group">
+        <label>Tempo per 1 km:</label>
+        <div class="time-inputs">
+            <div class="time-input-wrapper">
+                <input type="number" id="minutes" min="0" max="59" value="10" placeholder="0">
+                <div class="unit">minuti</div>
+            </div>
+            <div class="separator">:</div>
+            <div class="time-input-wrapper">
+                <input type="number" id="seconds" min="0" max="59" value="0" placeholder="0">
+                <div class="unit">secondi</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="result-box" id="resultBox">
+        <div class="result-label">Velocità</div>
+        <div>
+            <span class="result-value" id="speed">6.0</span>
+            <span class="result-unit">km/h</span>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <strong>💡 Riferimenti:</strong><br>
+        • Camminata lenta: 3-4 km/h<br>
+        • Camminata normale: 4-5 km/h<br>
+        • Camminata veloce: 5-6.5 km/h<br>
+        • Camminata sportiva: 6.5-8 km/h
+    </div>
+</div>
+
+<script>
+    const minutesInput = document.getElementById('minutes');
+    const secondsInput = document.getElementById('seconds');
+    const speedDisplay = document.getElementById('speed');
+
+    function calculateSpeed() {
+        const minutes = parseInt(minutesInput.value) || 0;
+        const seconds = parseInt(secondsInput.value) || 0;
+
+        // Calcola il tempo totale in ore per fare 1 km
+        const totalMinutes = minutes + (seconds / 60);
+        const hoursPerKm = totalMinutes / 60;
+
+        // Se il tempo è zero, mostra un messaggio
+        if (hoursPerKm === 0) {
+            speedDisplay.textContent = '--';
+            return;
+        }
+
+        // Velocità = 1 km / tempo in ore
+        const speed = 1 / hoursPerKm;
+
+        // Mostra il risultato con una cifra decimale
+        speedDisplay.textContent = speed.toFixed(1);
+    }
+
+    // Calcola quando l'utente modifica i valori
+    minutesInput.addEventListener('input', calculateSpeed);
+    secondsInput.addEventListener('input', calculateSpeed);
+
+    // Previeni valori negativi e limita il range
+    minutesInput.addEventListener('change', function() {
+        if (this.value < 0) this.value = 0;
+        if (this.value > 59) this.value = 59;
+        calculateSpeed();
+    });
+
+    secondsInput.addEventListener('change', function() {
+        if (this.value < 0) this.value = 0;
+        if (this.value > 59) this.value = 59;
+        calculateSpeed();
+    });
+
+    // Calcola la velocità iniziale
+    calculateSpeed();
+</script>
+```
+
+</body>
+</html>
